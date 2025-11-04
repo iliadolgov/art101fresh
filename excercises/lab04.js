@@ -17,3 +17,12 @@ megaSentence="<p>My two top commutes from the array are: " + myCommutes[0] + ", 
 megaSentence=megaSentence + "<p>My favourite commute posseses such characteristics: type - " + myFavouriteCommute.type + ", route number " + myFavouriteCommute.route + ", the best driver: " + myFavouriteCommute.drivers[0];
 
 $("#output").html(megaSentence);
+
+
+let myCat={
+    name: "Lazy",
+    ears: 2,
+    color: "pink",
+    hasKittens: true,
+    purr: function (){ console.log("purrrrrr")},
+};

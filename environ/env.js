@@ -1,19 +1,42 @@
-// declaring an array with name myCommutes
-let myCommutes=["metro bus", "UCSC taps bus", "personal bike", "rental bike", "some random car", "friends"];
 
-// declaring an object with name myCommutes
-let myFavouriteCommute={
-    type: "Bus",
-    route: 1,
-    print: "Mountain Lion",
-    hasMiddleDoor: true,
-    drivers: ["Elena", "Alex", "the guy with a read beard"],
-};
+let characterA = {
+name: "Pikachu Attreides",
+nightPhrase: "I am to excited to sleep I need more ASRM",
+dayPhrase: "Time for a brunch",
+}
 
-let megaSentence;
+let characterB = {
+name: "Pikachu Zendaya",
+nightPhrase: "So sleepy actiually",
+dayPhrase: "Sleepy even more",
+}
 
-megaSentence="<p>My two top commutes from the array are: " + myCommutes[0] + ", " + myCommutes[5] + "</p>";
 
-megaSentence=megaSentence + "<p>My favourite commute posseses such characteristics: type - " + myFavouriteCommute.type + ", route number " + myFavouriteCommute.route + ", the best driver: " + myFavouriteCommute.drivers[0];
 
-$("#output").html(megaSentence);
+function switchTime (nightorday) {
+
+ if(nightorday=="night") {
+
+ $("body").css("background-image", "url(img/dune-night.jpg");
+ $("#convo").html("<p>" + characterA.name + " says " + characterA.nightPhrase + "<p>" + characterB.name + " says " + characterB.nightPhrase);
+
+ }
+else {
+$("body").css("background-image", "url(img/dune.jpg");
+ $("#convo").html("<p>" + characterA.name + " says " + characterA.dayPhrase + "<p>" + characterB.name + " says " + characterB.dayPhrase);
+
+}
+
+}
+
+$("#night").click( function() {
+
+ switchTime("night");
+
+});
+
+$("#day").click( function() {
+
+ switchTime("day");
+
+});

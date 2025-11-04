@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sticky Menu Push — Template</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.4; }
+
+    .container { max-width: 960px; margin: 0 auto; padding: 16px; }
+
+    /* Sticky header/menu */
+    #my-site-map {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #111;
+      color: #fff;
+      overflow: hidden;                 /* hide during slide anim */
+      border-bottom: 1px solid #222;
+    }
+    #my-site-map a { color: #fff; text-decoration: none; }
+    #my-site-map .bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+    }
+    #my-site-map .menu-items {
+      padding: 8px 16px 16px 16px;
+    }
+
+    /* Spacer under the header (JS controls the height) */
+    #header-spacer { height: 0; pointer-events: none; }
+
+    /* Demo content */
+    #my-content-block img { max-width: 100%; height: auto; display: block; }
+    .demo-hero { height: 50vh; background: #f5f5f5; display: grid; place-items: center; border-bottom: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+
+  <!-- Sentinel BEFORE the sticky header -->
+  <div id="sticky-sentinel" style="height:1px;"></div>
+
+  <!-- Sticky header / menu (visible by default) -->
+  <nav id="my-site-map" aria-label="Site menu">
+    <div class="bar container">
+      <button id="toggle-menu" type="button" aria-expanded="true" aria-controls="my-site-map">☰ Menu</button>
+      <strong style="margin-left:auto;">Your Logo</strong>
+    </div>
+    <div class="menu-items container">
+      <a href="#">Home</a> ·
+      <a href="#">Projects</a> ·
+      <a href="#">Writing</a> ·
+      <a href="#">About</a> ·
+      <a href="#">Contact</a>
+    </div>
+  </nav>
+
+  <!-- Spacer directly AFTER the sticky header -->
+  <div id="header-spacer" aria-hidden="true"></div>
+
+  <!-- Main content -->
+  <main id="my-content-block">
+    <section class="demo-hero"><div class="container">Scroll down and toggle the menu</div></section>
+    <div class="container">
+      <h1>Content Title</h1>
+      <p>This template makes a sticky menu push the page down when it expands, even while sticky.</p>
+      <p><img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1200" alt="Demo image"></p>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio repellat quasi reiciendis.</p>
+      <p><img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1200" alt="Demo image 2"></p>
+      <p>More text here. Add more images, dynamic content, etc.</p>
+    </div>
+    <section class="demo-hero"><div class="container">Bottom</div></section>
+  </main>
+
+  <script>
+    // Sticky "push-down" behavior for expanding/collapsing header
+    $(function () {
+      const $menu = $("#my-site-map");          // sticky header/menu
+      const $spacer = $("#header-spacer");      // spacer under header
+      const $sentinel = $("#sticky-sentinel");  // sentinel above header
+      const DURATION = 600;                     // jQuery "slow"
+      let isSticky = false;
+      let animating = false;
+      let rafId = null;
+
+      // Toggle button
+      $("#toggle-menu").on("click", function (e) {
+        e.stopPropagation();
+        toggleMenu();
+      });
+
+      // Optional: click on body closes menu if open (outside header/button)
+      $("body").on("click", function (e) {
+        if ($(e.target).closest("#my-site-map, #toggle-menu").length) return;
+        if ($menu.is(":visible")) toggleMenu(false);
+      });
+
+      function readMenuOuterHeight() { return $menu.outerHeight(true) || 0; }
+      function setSpacer(h) { if ($spacer.height() !== h) $spacer.height(h); }
+      function syncSpacerImmediate() {
+        setSpacer(isSticky && $menu.is(":visible") ? readMenuOuterHeight() : 0);
+      }
+
+      function startRafSync() {
+        if (rafId) cancelAnimationFrame(rafId);
+        animating = true;
+        const tick = () => {
+          if (!animating) return;
+          setSpacer(isSticky ? readMenuOuterHeight() : 0);
+          rafId = requestAnimationFrame(tick);
+        };
+        rafId = requestAnimationFrame(tick);
+      }
+
+      function stopRafSync() {
+        animating = false;
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = null;
+        syncSpacerImmediate();
+      }
+
+      // Natural height for hidden element (pre-measure to avoid first-frame jump)
+      function naturalHeight($el) {
+        if ($el.is(":visible")) return readMenuOuterHeight();
+        const $c = $el.clone().css({
+          visibility: "hidden",
+          display: "block",
+          height: "auto",
+          position: "absolute",
+          left: -9999,
+          top: -9999
+        }).appendTo(document.body);
+        const h = $c.outerHeight(true);
+        $c.remove();
+        return h;
+      }
+
+      // Open/close the menu; state: true=open, false=close, undefined=toggle
+      function toggleMenu(state) {
+        const wantOpen = (typeof state === "boolean") ? state : $menu.is(":hidden");
+        const $btn = $("#toggle-menu");
+
+        if (wantOpen) {
+          naturalHeight($menu);
+          startRafSync();
+          $menu.stop(true, true).slideDown(DURATION, () => {
+            stopRafSync();
+            $btn.attr("aria-expanded", "true");
+          });
+        } else {
+          startRafSync();
+          $menu.stop(true, true).slideUp(DURATION, () => {
+            stopRafSync();
+            $btn.attr("aria-expanded", "false");
+          });
+        }
+      }
+
+      // Detect stickiness via IntersectionObserver
+      const io = new IntersectionObserver((entries) => {
+        isSticky = !entries[0].isIntersecting;
+        syncSpacerImmediate();
+      }, { threshold: [0] });
+      io.observe($sentinel.get(0));
+
+      // Keep spacer correct on scroll/resize
+      $(window).on("scroll resize", syncSpacerImmediate);
+
+      // Resync when images load (layout shifts)
+      $("#my-content-block img").each(function () {
+        $(this).on("load", syncSpacerImmediate);
+      });
+
+      // If content is injected later, watch for new images
+      const mo = new MutationObserver((mutations) => {
+        for (const m of mutations) {
+          $(m.addedNodes).find("img").addBack("img").each(function () {
+            $(this).on("load", syncSpacerImmediate);
+          });
+        }
+      });
+      mo.observe(document.getElementById("my-content-block"), { childList: true, subtree: true });
+
+      // Initial aria + spacer sync (menu is visible on load)
+      $("#toggle-menu").attr("aria-expanded", "true");
+      syncSpacerImmediate();
+    });
+  </script>
+</body>
+</html>
