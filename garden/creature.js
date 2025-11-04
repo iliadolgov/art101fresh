@@ -1,12 +1,4 @@
 
-function addCreatureObject(
-
-const creatureNew={
-name: 
-
-}
-
-);
 
 
 
@@ -16,6 +8,8 @@ $("#crAdd").click(function () {
 
     $("#creature-list").append("<div>"+crName+"</div>");
 
-    //$("#crName").val("")
+    $("#crName").val("");
 
 });
+
+
