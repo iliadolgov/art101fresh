@@ -1,15 +1,21 @@
 
 
+$("#add-creature").click(
+    function () {
 
+        // grab the value from the input
+        let crName = $("#crName").val();
 
-$("#crAdd").click(function () {
+        // check for the field value do not add empty ones
+        if ( (crName == "") || (crName.length>12) ) { // do nothing 
+        }
+        else {
+            $("#creature-list").append(crName + ", ");
+        }
 
-    let crName=$("#crName").val();
+        // remove the name after it's added
+        $("#crName").val("");
 
-    $("#creature-list").append("<div>"+crName+"</div>");
-
-    $("#crName").val("");
-
-});
+    });
 
 
