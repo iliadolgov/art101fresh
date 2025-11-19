@@ -1,4 +1,6 @@
 
+BODY {background: #e4e9b6;}
+
 #creature-form {
     background: #eeeeee;
     padding: 20px;
@@ -6,32 +8,33 @@
 }
 
 #creature-list {
-    background: rgb(227, 245, 237);
+    background: rgb(235, 246, 238);
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     margin: 50px;
 }
 
-/*
+
 
 #creature-form DIV {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
-#creature-list {
+.creature {
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin: 50px;
-}
-
-#creature-list>DIV {
-    background: pink;
-    width: 100px;
-    height: 100px;
-    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
-*/
+
+.creature-body {
+    background: pink;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    width: 100px;
+    height: 100px;
+}
+
+.eye { height: 18px; width: 10px; border: 2px solid #000; border-radius: 10px; background: #fff;}
