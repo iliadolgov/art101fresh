@@ -8,11 +8,15 @@ BODY {background: #e4e9b6;}
 }
 
 #creature-list {
+ position: relative;
+  overflow: hidden; /* keeps them inside */
     background: rgb(235, 246, 238);
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     margin: 50px;
+    min-height: 60vh;
+    min-width: 60vw;
 }
 
 
@@ -26,6 +30,7 @@ BODY {background: #e4e9b6;}
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    position: relative; /* allow left/top animation offsets */
 }
 
 .creature-body {
