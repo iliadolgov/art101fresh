@@ -11,9 +11,14 @@
    <link rel="stylesheet" href="creature.css">
    <!-- jQuery library -->
    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
    <!-- Link to external JavaScript file -->
    <script src="wander.js" DEFER></script>
+   <script src="firebase.js" DEFER></script>
    <script src="creature.js" DEFER></script>
+
 </head>
 
 <body>
@@ -30,7 +35,9 @@
    </div>
 
 <button id="btn-start">Roam!</button>
+<button id="btn-resume">Resume the roam!</button>
 <button id="btn-freeze">Freeze!</button>
+<button id="btn-load">Load!</button>
 
 <h3>Creatures will come:</h3> 
    <div id="creature-list"> </div>

@@ -108,6 +108,25 @@ function clearForm() {
 }
 
 
+function loadCreaturesFromDB() {
+  creaturesRef.once("value").then(snapshot => {
+    const data = snapshot.val() || {};
+    allCreatures = Object.keys(data).map(id => data[id]);
+    renderAllCreatures();
+  });
+}
+
+function renderAllCreatures() {
+ 
+ $("#creature-list").empty();
+
+  allCreatures.forEach((cr, index) => {
+  
+    addCreatureToDOM(cr);
+ 
+  });
+}
+
 
 // BUTTON HANDLERS
 
@@ -130,6 +149,7 @@ $("#add-creature").click(
    
    allCreatures.push(newCreature);   // remember it
    addCreatureToDOM(newCreature);    // show it
+   creaturesRef.push(newCreature);
 // start wandering for this single new creature:
 let newest = $("#creature-list .creature").last()[0];
 startWanderingOne(newest);
@@ -141,9 +161,20 @@ startWanderingOne(newest);
 startWanderingAll();
 
 $("#btn-start").click(function () {
-  resumeWandering();
+  startWanderingAll();
 });
 
+$("#btn-resume").click(function () {
+  resumeWandering();
+});
 $("#btn-freeze").click(function () {
   freezeWandering();
 });
+
+$("#btn-load").click(function () {
+  loadCreaturesFromDB();
+});
+
+//
+
+
