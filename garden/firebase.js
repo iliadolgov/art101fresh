@@ -2,7 +2,7 @@
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
+// Your web app's Firebase configuration provided when setting up the firebase
 const firebaseConfig = {
   apiKey: "AIzaSyDrkHSpBUKFmxQDR6AtPWX8mxQxG9O5PMk",
   authDomain: "art101-78759.firebaseapp.com",
@@ -18,7 +18,6 @@ const firebaseConfig = {
   // Get database
   const db = firebase.database();
 
-  // Reference to creatures collection
+  // Reference to creatures collection, just our own name
   const creaturesRef = db.ref("garden/creatures");
-
 

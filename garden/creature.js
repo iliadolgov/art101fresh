@@ -4,65 +4,65 @@ let allCreatures = [];
 // random name api
 async function getRandomName() {
 
-   const response = await fetch(
-"https://api.gofakeit.com/funcs/petname", 
-{method: "GET",});
+  const response = await fetch(
+    "https://api.gofakeit.com/funcs/petname",
+    { method: "GET", });
 
-   const nameRandom = await response.text();
-   console.log("Got name:", nameRandom);
-   return nameRandom;
+  const nameRandom = await response.text();
+  console.log("Got name:", nameRandom);
+  return nameRandom;
 }
 
 // random name api
 async function getRandomColor() {
 
-   const response = await fetch(
-"https://api.gofakeit.com/funcs/hexcolor", 
-{method: "GET",});
+  const response = await fetch(
+    "https://api.gofakeit.com/funcs/hexcolor",
+    { method: "GET", });
 
-   const nameRandom = await response.text();
-   console.log("Got name:", nameRandom);
-   return nameRandom;
+  const nameRandom = await response.text();
+  console.log("Got name:", nameRandom);
+  return nameRandom;
 }
 
 // random emoji api
 async function getRandomEmoji() {
 
-   const response = await fetch(
-"https://api.gofakeit.com/funcs/emojianimal", 
-{method: "GET",});
+  const response = await fetch(
+    "https://api.gofakeit.com/funcs/emojianimal",
+    { method: "GET", });
 
-   const nameRandom = await response.text();
-   console.log("Got name:", nameRandom);
-   return nameRandom;
+  const nameRandom = await response.text();
+  console.log("Got name:", nameRandom);
+  return nameRandom;
 }
 
 // random creature
 async function randomizeCreature() {
 
-   const eyesRandom = Math.floor(Math.random() * 5) + 1;
-   const nameRandom = await getRandomName();
-   const colorRandom = await getRandomColor();
-   const emojiRandom=await getRandomEmoji();
+  const eyesRandom = Math.floor(Math.random() * 5) + 1;
+  const nameRandom = await getRandomName();
+  const colorRandom = await getRandomColor();
+  const emojiRandom = await getRandomEmoji();
 
-   const randomCreature = {
-       name: emojiRandom+nameRandom,
-       color: colorRandom,
-       eyesNum: eyesRandom
-   };
+  const randomCreature = {
+    name: emojiRandom + nameRandom,
+    color: colorRandom,
+    eyesNum: eyesRandom
+  };
 
-   return randomCreature;
+  return randomCreature;
 }
 
 // grabs data from the form
 function getCreatureFromForm() {
-    const freshCreature = {
-        name: $("#crName").val(),
-        color: $("#crColor").val(),
-        eyesNum: $("#crEyesNum").val()
-    };
+  const freshCreature = {
+    name: $("#crName").val(),
+    color: $("#crColor").val(),
+    eyesNum: $("#crEyesNum").val()
+  };
 
-    return freshCreature;
+  return freshCreature;
 };
 
 // prepare HTML for a single creature (does NOT add to the page)
@@ -73,7 +73,7 @@ function renderCreature(creature) {
     crEyesHTML = crEyesHTML + "<div class='eye'>.</div>";
   }
 
-  const html=`
+  const html = `
 <div class="creature">
   <div class="creature-body" style="background: ${creature.color}">
 ${crEyesHTML}
@@ -96,8 +96,8 @@ function addCreatureToDOM(creature) {
 function isCreatureValid(creature) {
   if (creature.name === "") return false;
   if (creature.name.length > 12) return false;
-  if (creature.eyesNum=="" || creature.eyesNum > 5) return false;
-  return true;  
+  if (creature.eyesNum == "" || creature.eyesNum > 5) return false;
+  return true;
 }
 
 // clear all form fields
@@ -109,54 +109,69 @@ function clearForm() {
 
 
 function loadCreaturesFromDB() {
-  creaturesRef.once("value").then(snapshot => {
-    const data = snapshot.val() || {};
-    allCreatures = Object.keys(data).map(id => data[id]);
-    renderAllCreatures();
-  });
+ creaturesRef.once("value").then(snapshot => {
+   const data = snapshot.val() || {};
+   allCreatures = Object.keys(data).map(id => data[id]);
+   renderAllCreatures();
+ });
 }
 
 function renderAllCreatures() {
- 
+
  $("#creature-list").empty();
 
-  allCreatures.forEach((cr, index) => {
-  
-    addCreatureToDOM(cr);
- 
-  });
+ allCreatures.forEach((cr, index) => {
+   addCreatureToDOM(cr);
+ });
+
+}
+
+
+function loadThreeEyeCreatures() {
+ creaturesRef
+   .orderByChild("eyesNum")
+   .equalTo(3)
+   .once("value")
+   .then(snapshot => {
+     const data = snapshot.val() || {};
+
+     // convert {id: creature, ...} → [creature, ...]
+     allCreatures = Object.values(data);
+
+     console.log("3-eye creatures:", allCreatures);
+     renderAllCreatures();
+   });
 }
 
 
 // BUTTON HANDLERS
 
 $("#add-creature").click(
-    async function () {
+  async function () {
 
- 
+
     let newCreature;
 
-   // choose the source for a creature
-    if( $("#crRandom").is(':checked') ) 
-    { newCreature= await randomizeCreature();}
-    else 
-    { newCreature= getCreatureFromForm(); }
+    // choose the source for a creature
+    if ($("#crRandom").is(':checked')) { newCreature = await randomizeCreature(); }
+    else { newCreature = getCreatureFromForm(); }
 
     // do checks, exit function if something is wrong
-   if ( isCreatureValid(newCreature)==false) {
-    return;
-   }
-   
-   allCreatures.push(newCreature);   // remember it
-   addCreatureToDOM(newCreature);    // show it
-   creaturesRef.push(newCreature);
-// start wandering for this single new creature:
-let newest = $("#creature-list .creature").last()[0];
-startWanderingOne(newest);
+    if (isCreatureValid(newCreature) == false) {
+      return;
+    }
 
-   clearForm();
+    allCreatures.push(newCreature);   // remember it
+    addCreatureToDOM(newCreature);    // show it
+    creaturesRef.push(newCreature); // save the new creature to the database
 
-    });
+    // start wandering for this single new creature:
+    let newest = $("#creature-list .creature").last()[0];
+    startWanderingOne(newest);
+
+    clearForm();
+
+  });
 
 startWanderingAll();
 
@@ -172,7 +187,11 @@ $("#btn-freeze").click(function () {
 });
 
 $("#btn-load").click(function () {
-  loadCreaturesFromDB();
+ loadCreaturesFromDB();
+});
+
+$("#btn-load-three").click(function () {
+ loadThreeEyeCreatures();
 });
 
 //

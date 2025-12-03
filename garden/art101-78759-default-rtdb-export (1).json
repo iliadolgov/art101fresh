@@ -1,0 +1,21 @@
+{
+  "garden": {
+    "creatures": {
+      "-OfR81k5PHBRYPoZrfu9": {
+        "color": "#ee7dea",
+        "eyesNum": "1",
+        "name": "asdfsadf"
+      },
+      "-OfR8339rNKHJM3NZ548": {
+        "color": "#3d10dd",
+        "eyesNum": 2,
+        "name": "🦏Bruiser"
+      },
+      "-OfR8Nayp9VPBhC86FJL": {
+        "color": "#bbe790",
+        "eyesNum": 3,
+        "name": "🦒Alfalfa"
+      }
+    }
+  }
+}
